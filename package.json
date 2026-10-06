@@ -1,0 +1,81 @@
+{
+  "name": "sf-plugin-privacy-policy",
+  "description": "Move Salesforce Privacy Center policies (retention, RTBF) between orgs from the command line.",
+  "version": "0.1.0",
+  "author": "Mahmoud Mabrouk",
+  "dependencies": {
+    "@oclif/core": "^5.0.0",
+    "@salesforce/core": "^9.1.10",
+    "@salesforce/kit": "^4.0.0",
+    "@salesforce/sf-plugins-core": "^13.0.4"
+  },
+  "devDependencies": {
+    "@oclif/plugin-command-snapshot": "^6.0.0",
+    "@salesforce/cli-plugins-testkit": "^5.3.66",
+    "@salesforce/dev-scripts": "^14.0.0",
+    "@salesforce/plugin-command-reference": "^3.1.133",
+    "@types/chai": "^4.3.17",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^18",
+    "@types/sinon": "^10.0.20",
+    "eslint": "^10.4.0",
+    "eslint-config-salesforce-typescript": "^7.0.0",
+    "eslint-plugin-sf-plugin": "^3.0.0",
+    "mocha": "^12.0.3",
+    "oclif": "^5.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "files": [
+    "/lib",
+    "/messages",
+    "/oclif.manifest.json"
+  ],
+  "keywords": [
+    "sf-plugin",
+    "salesforce",
+    "privacy-center",
+    "rtbf",
+    "data-retention",
+    "devops"
+  ],
+  "license": "Apache-2.0",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "sf",
+    "topicSeparator": " ",
+    "devPlugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-command-snapshot",
+      "@salesforce/plugin-command-reference"
+    ],
+    "topics": {
+      "privacy": {
+        "description": "Privacy Center commands.",
+        "subtopics": {
+          "policy": {
+            "description": "List, export, and import Privacy Center policies."
+          }
+        }
+      }
+    },
+    "flexibleTaxonomy": true
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "compile": "tsc -p .",
+    "test": "mocha \"test/**/*.test.ts\"",
+    "lint": "eslint src test",
+    "prepack": "tsc -p . && oclif manifest && oclif readme",
+    "postpack": "rm -f oclif.manifest.json",
+    "version": "oclif readme"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": "./lib/index.js",
+  "type": "module"
+}
