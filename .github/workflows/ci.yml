@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node: [20, 22]
+        node: [22, 24]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -21,5 +21,4 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: npm run lint
-        if: matrix.node == 22 # eslint 10 needs Node 22+
       - run: npm test

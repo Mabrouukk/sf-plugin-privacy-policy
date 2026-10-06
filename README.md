@@ -34,7 +34,7 @@ sf plugins install sf-plugin-privacy-policy
 
 The CLI asks you to confirm because the plugin isn't signed by Salesforce. That's normal for community plugins. To skip the question on CI machines, add `sf-plugin-privacy-policy` to [`unsignedPluginAllowList.json`](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_allowlist.htm).
 
-Requirements: Salesforce CLI (`sf`), Node.js 20+, and native Privacy Center (on-platform, Winter '24 or later) with the **Manage Privacy Center Policies** permission. Legacy Privacy Center (managed package + Heroku) isn't supported.
+Requirements: Salesforce CLI (`sf`), Node.js 22+, and native Privacy Center (on-platform, Winter '24 or later) with the **Manage Privacy Center Policies** permission. Legacy Privacy Center (managed package + Heroku) isn't supported.
 
 Update with `sf plugins update`; remove with `sf plugins uninstall sf-plugin-privacy-policy`.
 
