@@ -48,7 +48,10 @@ export default class PolicyDiff extends SfCommand<DiffRow[]> {
         source.set(f.doc.developerName, { status: f.doc.status, load: () => Promise.resolve(f.doc) });
       }
     } else {
-      const src = await OrgPolicies.load(await Org.create({ aliasOrUsername: flags['source-org'] }), flags['api-version']);
+      const src = await OrgPolicies.load(
+        await Org.create({ aliasOrUsername: flags['source-org'] }),
+        flags['api-version']
+      );
       for (const s of src.summaries) source.set(s.developerName, { status: s.status, load: () => src.export(s) });
     }
 
@@ -58,7 +61,13 @@ export default class PolicyDiff extends SfCommand<DiffRow[]> {
       const s = source.get(name);
       const t = target.find(name);
       if (!t) {
-        rows.push({ policy: name, state: 'only in source', sourceStatus: s!.status, targetStatus: '', differences: [] });
+        rows.push({
+          policy: name,
+          state: 'only in source',
+          sourceStatus: s!.status,
+          targetStatus: '',
+          differences: [],
+        });
       } else if (!s) {
         rows.push({ policy: name, state: 'only in target', sourceStatus: '', targetStatus: t.status, differences: [] });
       } else {
@@ -77,7 +86,10 @@ export default class PolicyDiff extends SfCommand<DiffRow[]> {
     this.spinner.stop();
 
     this.table({
-      data: rows.map((r) => ({ ...r, differences: r.differences.slice(0, 5).join(', ') + (r.differences.length > 5 ? ', …' : '') })),
+      data: rows.map((r) => ({
+        ...r,
+        differences: r.differences.slice(0, 5).join(', ') + (r.differences.length > 5 ? ', …' : ''),
+      })),
       columns: [
         { key: 'policy', name: 'Policy' },
         { key: 'state', name: 'State' },

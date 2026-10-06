@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import type { Connection, Org } from '@salesforce/core';
 import {
   allObjects,
   decodeExport,
@@ -114,5 +115,16 @@ describe('diffPolicies', () => {
     const b = sanitize(sampleExport());
     b.objects[0].objects![0].fields![0].maskingCategory = 'delete';
     expect(diffPolicies(a, b)).to.deep.equal(['objects[0].objects[0].fields[0].maskingCategory']);
+  });
+});
+
+describe('validation of empty policies', () => {
+  it('flags a policy with no objects before anything is sent to Salesforce', async () => {
+    const { validatePolicies } = await import('../../src/shared/validate.js');
+    const org = { retrieveMaxApiVersion: () => Promise.resolve('67.0') };
+    const empty = { ...sanitize(sampleExport()), objects: [] };
+    const issues = await validatePolicies(org as unknown as Org, {} as unknown as Connection, [empty]);
+    expect(issues).to.have.length(1);
+    expect(issues[0].problem).to.match(/no objects or fields/);
   });
 });

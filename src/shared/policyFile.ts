@@ -44,7 +44,10 @@ export function decodeExport(base64: string): PolicyDocument {
   try {
     doc = JSON.parse(Buffer.from(base64, 'base64').toString('utf8'));
   } catch {
-    throw new SfError('The exported policy text is not base64-encoded JSON. Salesforce may have changed the format.', 'BadExportFormat');
+    throw new SfError(
+      'The exported policy text is not base64-encoded JSON. Salesforce may have changed the format.',
+      'BadExportFormat'
+    );
   }
   assertPolicy(doc);
   return doc;
@@ -191,6 +194,9 @@ function sortKeys(value: unknown): unknown {
 function assertPolicy(doc: unknown, source = 'Exported policy'): asserts doc is PolicyDocument {
   const d = doc as Partial<PolicyDocument> | null;
   if (!d || typeof d !== 'object' || typeof d.developerName !== 'string' || !Array.isArray(d.objects)) {
-    throw new SfError(`${source} is missing developerName or objects; it is not a Privacy Center policy.`, 'BadPolicyFile');
+    throw new SfError(
+      `${source} is missing developerName or objects; it is not a Privacy Center policy.`,
+      'BadPolicyFile'
+    );
   }
 }

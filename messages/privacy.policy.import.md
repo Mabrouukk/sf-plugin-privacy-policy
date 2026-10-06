@@ -26,7 +26,7 @@ Validate and show what would be imported, without changing the org.
 
 # flags.activate.summary
 
-Import policies as active. They are inactive by default.
+Experimental: import policies as active. They are inactive by default. Safer: import inactive, then activate in Privacy Center.
 
 # flags.no-prompt.summary
 

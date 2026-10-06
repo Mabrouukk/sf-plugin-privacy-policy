@@ -1,5 +1,5 @@
 import { Connection, Org } from '@salesforce/core';
-import { PolicyDocument, referencedSchema } from './policyFile.js';
+import { allObjects, PolicyDocument, referencedSchema } from './policyFile.js';
 import { PolicySummary } from './policies.js';
 
 export type ValidationIssue = { policy: string; problem: string };
@@ -22,6 +22,14 @@ export async function validatePolicies(org: Org, conn: Connection, docs: PolicyD
 
   for (const doc of docs) {
     const policy = doc.developerName;
+    if (!allObjects(doc).length) {
+      issues.push({
+        policy,
+        problem:
+          'Policy has no objects or fields, so Salesforce would reject it. Add at least one object to the policy in the source org.',
+      });
+      continue;
+    }
     if (Number(doc.apiVersion) > orgApiVersion) {
       issues.push({
         policy,

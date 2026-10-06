@@ -77,5 +77,13 @@
     "access": "public"
   },
   "exports": "./lib/index.js",
-  "type": "module"
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mabrouukk/sf-plugin-privacy-policy.git"
+  },
+  "homepage": "https://github.com/Mabrouukk/sf-plugin-privacy-policy#readme",
+  "bugs": {
+    "url": "https://github.com/Mabrouukk/sf-plugin-privacy-policy/issues"
+  }
 }

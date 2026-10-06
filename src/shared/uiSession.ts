@@ -17,9 +17,8 @@ export class UiSession {
     // Frontdoor can answer 200 with a client-side redirect, so request the page explicitly.
     const target = new URL(path, url).toString();
     const page = await session.request(target);
-    const jsRedirect = page.html.match(/window\.location\.replace\('([^']+)'\)/)?.[1];
-    if (jsRedirect && !page.html.includes('<form')) {
-      const where = new URL(jsRedirect, page.url).pathname;
+    const where = findInterstitial(page.html, page.url);
+    if (where) {
       throw new SfError(`Salesforce sent this user to ${where} instead of ${path}.`, 'UiInterstitial', [
         where.includes('ChangePassword')
           ? 'This user must change their password first. Run "sf org open" for this org, set a new password, then try again.'
@@ -84,4 +83,13 @@ export class UiSession {
   private cookieHeader(): string {
     return [...this.jar].map(([k, v]) => `${k}=${v}`).join('; ');
   }
+}
+
+/**
+ * Salesforce answers some page requests with a script-only redirect (change password,
+ * identity verification) instead of the page. Returns the path it redirects to, if so.
+ */
+export function findInterstitial(html: string, pageUrl: string): string | undefined {
+  const jsRedirect = html.match(/window\.location\.replace\('([^']+)'\)/)?.[1];
+  return jsRedirect && !html.includes('<form') ? new URL(jsRedirect, pageUrl).pathname : undefined;
 }

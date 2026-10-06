@@ -23,7 +23,8 @@ export async function readPolicyDir(dir: string): Promise<PolicyFile[]> {
   const seen = new Map<string, string>();
   for (const f of files) {
     const other = seen.get(f.doc.developerName);
-    if (other) throw new SfError(`Policy ${f.doc.developerName} is defined twice: ${other} and ${f.path}.`, 'DuplicatePolicy');
+    if (other)
+      throw new SfError(`Policy ${f.doc.developerName} is defined twice: ${other} and ${f.path}.`, 'DuplicatePolicy');
     seen.set(f.doc.developerName, f.path);
   }
   return files;

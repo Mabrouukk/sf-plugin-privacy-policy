@@ -68,7 +68,7 @@ export class ImportExportPage {
   }
 }
 
-function parseForm(html: string): ParsedForm {
+export function parseForm(html: string): ParsedForm {
   const formTag = html.match(/<form\b[^>]*id="thePage:theForm"[^>]*>/)?.[0];
   if (!formTag) {
     throw new SfError(
@@ -83,12 +83,16 @@ function parseForm(html: string): ParsedForm {
     if (name && attr(tag, 'type') === 'hidden') hidden.set(name, attr(tag, 'value') ?? '');
   }
   if (!hidden.has('com.salesforce.visualforce.ViewState')) {
-    throw new SfError('The Policy Export / Import page has no ViewState. Salesforce may have changed it.', 'PageChanged');
+    throw new SfError(
+      'The Policy Export / Import page has no ViewState. Salesforce may have changed it.',
+      'PageChanged'
+    );
   }
   const submit = (label: string): string => {
     const tag = inputs.find((t) => attr(t, 'type') === 'submit' && attr(t, 'value') === label);
     const name = tag && attr(tag, 'name');
-    if (!name) throw new SfError(`The "${label}" button was not found on the Policy Export / Import page.`, 'PageChanged');
+    if (!name)
+      throw new SfError(`The "${label}" button was not found on the Policy Export / Import page.`, 'PageChanged');
     return name;
   };
   const policyIdField = inputs.map((t) => (attr(t, 'type') === 'text' ? attr(t, 'name') : null)).find(Boolean);
@@ -111,9 +115,19 @@ function attr(tag: string, name: string): string | null {
   return m ? decodeEntities(m[1]) : null;
 }
 
-function pageMessage(html: string): string | undefined {
-  const raw = html.match(/((?:Success|Error|Warning)\s*:[^<]*)/)?.[1];
-  return raw ? decodeEntities(raw).replace(/\s+/g, ' ').trim() : undefined;
+/**
+ * Reads the page's message box(es). Salesforce renders them as
+ * <div class="messageText"><span><h4>Error:</h4></span>the actual reason<br/></div>,
+ * so the whole box is read, not just the heading.
+ */
+export function pageMessage(html: string): string | undefined {
+  const boxes = [...html.matchAll(/<div[^>]*class="messageText"[^>]*>([\s\S]*?)<\/div>/g)].map((m) =>
+    decodeEntities(m[1].replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, ' '))
+      .replace(/\s+/g, ' ')
+      .replace(/^(Success|Error|Warning|Info)\s*:\s*/i, '$1: ')
+      .trim()
+  );
+  return boxes.filter(Boolean).join(' | ') || undefined;
 }
 
 function decodeEntities(s: string): string {

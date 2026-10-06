@@ -98,9 +98,13 @@ Picklist values for `Type`: `datamanagement | herokumigration | datamask | rtbf 
 - **Risk:** this is an undocumented internal page. Salesforce can rename fields or change it in any release. Mitigate by parsing fields by label, failing loudly on anything unexpected, and running a canary e2e test each release. **README must say so.**
 - C (Playwright) not needed.
 
-Open questions to test next (all on a disposable/second org for import):
-1. Does a POST using a frontdoor session from the `sf` token work for the Export POST? (read-only)
-2. Does Import accept a payload with the IDs removed? If not, re-add the source IDs or use placeholders. They can't be stored in Git, so the tool would inject dummies at import time.
-3. What does Import return on success vs. failure (missing field, duplicate name)?
-4. How do we update an existing policy? The page says the name must not exist in the target, so "update" may mean delete + re-import, or a rename. This affects the idempotency rule.
+Answers from testing (Oct 2026, two sandboxes on the same release):
+1. **Frontdoor session works.** `frontdoor.jsp?sid=<access token>` did not set a session cookie, but the single-use URL from `org.getFrontDoorUrl()` (what `sf org open` uses) does. Export and Import POSTs both work with it.
+2. **Import works with placeholder IDs.** Files in Git hold no IDs. At import time the tool rebuilds consistent placeholder IDs (one per object, field, and version; each child's `parentObject` points at its parent's), mirroring the manual flow, which also sends foreign IDs. Salesforce created the policy, and a re-export matched the file exactly.
+3. **Messages:** both are a `div.messageText` with an `<h4>Success:</h4>` or `<h4>Error:</h4>` heading followed by the text, for example "We couldn't save your policy because it doesn't include any objects. Add an object and try again."
+4. **No update path.** Import only creates. The tool treats "exists and identical" as unchanged (idempotent) and "exists and different" as a conflict that a person resolves.
 
+Other findings:
+- RTBF policies nest child objects (`objects[].objects[]`) with `fieldReference` = the child's lookup field to the parent.
+- Field existence must combine Tooling `FieldDefinition` (sees fields hidden by field-level security) and `EntityParticle` (sees compound-field parts like `FirstName` and `BillingStreet`); `describe` alone hides FLS-restricted fields.
+- A user whose password expired gets a script redirect to `/_ui/system/security/ChangePassword` on UI pages while the API keeps working.

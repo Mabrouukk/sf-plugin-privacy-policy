@@ -1,39 +1,24 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Something didn't work as expected
+labels: bug
 ---
 
-<!--
-NOTICE: While GitHub is the preferred channel for reporting issues/feedback, this is not a mechanism for receiving support under any agreement or SLA. If you require immediate assistance, please use official support channels.
--->
+**What did you run?**
 
-<!--
-FOR BUGS RELATED TO THE SALEFORCE CLI, please use this repository: https://github.com/forcedotcom/cli/issues
--->
+```
+sf privacy policy ...
+```
 
-### Summary
+**What happened?** Paste the full output. Remove anything private (org names, usernames, customer data).
 
-_Short summary of what is going on or to provide context_.
+**What did you expect?**
 
-### Steps To Reproduce:
+**Versions**
 
-1.  This is step 1.
-1.  This is step 2. All steps should start with '1.'
+- Plugin version (`sf plugins`):
+- Salesforce CLI version (`sf --version`):
+- Salesforce release of the source and target orgs (for example Winter '27):
+- Policy type (data management / RTBF / archive):
 
-### Expected result
-
-_Describe what should have happened_.
-
-### Actual result
-
-_Describe what actually happened instead_.
-
-### Additional information
-
-_Feel free to attach a screenshot_.
-
-**VS Code Version**:
-
-**SFDX CLI Version**:
-
-**OS and version**:
+**Did the same policy work with the manual Export / Import page?** yes / no / didn't try

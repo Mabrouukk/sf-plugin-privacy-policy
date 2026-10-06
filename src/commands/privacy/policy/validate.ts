@@ -33,10 +33,20 @@ export default class PolicyValidate extends SfCommand<ValidateResult> {
     const result = { valid: issues.length === 0, policies: docs.map((d) => d.developerName), issues };
 
     if (issues.length) {
-      this.table({ data: issues, columns: [{ key: 'policy', name: 'Policy' }, { key: 'problem', name: 'Problem' }] });
-      throw new SfError(messages.getMessage('error.invalid', [issues.length]), 'ValidationFailed', [], 1, undefined).setData(
-        result
-      );
+      this.table({
+        data: issues,
+        columns: [
+          { key: 'policy', name: 'Policy' },
+          { key: 'problem', name: 'Problem' },
+        ],
+      });
+      throw new SfError(
+        messages.getMessage('error.invalid', [issues.length]),
+        'ValidationFailed',
+        [],
+        1,
+        undefined
+      ).setData(result);
     }
     this.logSuccess(messages.getMessage('info.valid', [docs.length, org.getUsername()]));
     return result;
