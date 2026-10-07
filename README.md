@@ -89,6 +89,24 @@ The files are sorted, readable JSON with no org-specific IDs, so Git diffs stay 
 ## FAQ
 
 <details>
+<summary><b>How do I migrate Salesforce Privacy Center policies between orgs?</b></summary>
+
+Install this plugin and run one command: `sf privacy policy copy -s <source-org> -o <target-org> -p <Policy_API_Name>`. It exports the policy from the source org and imports it into the target org, after checking that every object and field it uses exists there. Without the plugin, you have to open the Policy Export / Import page in each org and copy and paste the export text by hand.
+</details>
+
+<details>
+<summary><b>How do I deploy a data retention or RTBF policy from a sandbox to another org?</b></summary>
+
+Policies aren't deployable metadata, so `sf project deploy` and change sets don't move them. Deploy your objects and fields as usual, then run `sf privacy policy copy` with `--dry-run` to check the target org, and again without it to create the policy there (inactive). See [Quick start](#quick-start).
+</details>
+
+<details>
+<summary><b>Can I export and import Privacy Center policies with the Salesforce CLI?</b></summary>
+
+Not with the standard CLI, which has no command for policies. This plugin adds them: `sf privacy policy export` saves policies as JSON files you can keep in Git, and `sf privacy policy import` loads them into any org you're logged into.
+</details>
+
+<details>
 <summary><b>Is this an official Salesforce API?</b></summary>
 
 No. Salesforce has no API for policy export and import. The plugin uses the same Export / Import page you use by hand. If a Salesforce release changes that page, the plugin stops with a clear error instead of doing something unexpected. This is a community project; it isn't made or endorsed by Salesforce.
